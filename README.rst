@@ -20,14 +20,15 @@ A self-documenting Makefile drives everything. To get started::
 The common use-case is to recover dotfiles from the ``dots`` repository and
 restore secrets from an ``age``-encrypted Git bundle::
 
-    cd dots
+    # Packages, tools, and configs
     make install-packages
     make install-git
     make install-rust
     make install-helix
+
+    # Secrets
     make decrypt
     make install-ssh
-
 
 To create a new encrypted bundle::
 
