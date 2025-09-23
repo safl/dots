@@ -63,3 +63,18 @@ install-ssh:
 install-git:
 	git config --global user.email "os@safl.dk"
 	git config --global user.name "Simon A. F. Lund"
+
+install-helix:
+	@mkdir -p "$(HOME)/.config"
+	@if [ -d "helix" ]; then \
+		if [ -d "$(HOME)/.config/helix" ]; then \
+			echo "Updating existing Helix config..."; \
+			cp -r helix/* "$(HOME)/.config/helix/"; \
+		else \
+			echo "Installing new Helix config..."; \
+			cp -r helix "$(HOME)/.config/helix"; \
+		fi; \
+	else \
+		echo "Error: 'helix' directory not found in current path."; \
+		exit 1; \
+	fi

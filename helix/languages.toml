@@ -1,0 +1,187 @@
+[[language]]
+name = "bash"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "c"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "cpp"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "csv"
+scope = "source.csv"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "dockerfile"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "dot"
+scope = "source.dot"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "elixir"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "fish"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "git-commit"
+scope = "git.commit"
+text-width = 72
+rulers = [72]
+auto-pairs = true
+
+[[language]]
+name = "go"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "graphql"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "haskell"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "html"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "ini"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "java"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "javascript"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "json"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "kotlin"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "lua"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "make"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "markdown"
+text-width = 80
+rulers = [80]
+auto-pairs = true
+
+[[language]]
+name = "php"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "powershell"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "python"
+text-width = 79
+rulers = [79]
+
+[[language]]
+name = "regex"
+scope = "source.regex"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "rst"
+scope = "source.rst"
+text-width = 80
+rulers = [80]
+auto-pairs = true
+
+[[language]]
+name = "ruby"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "rust"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "scala"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "sql"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "swift"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "toml"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "typescript"
+text-width = 80
+rulers = [80]
+
+[[language]]
+name = "xml"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "yaml"
+text-width = 100
+rulers = [100]
+
+[[language]]
+name = "zig"
+text-width = 100
+rulers = [100]
