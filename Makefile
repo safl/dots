@@ -3,9 +3,11 @@ AGE_PATH    := $(BUNDLE_PATH).age
 REPO_PATH   := $(HOME)/git/secrets
 SSH_DIR     := $(HOME)/.ssh
 
-.DEFAULT_GOAL := info
+DEFAULT_GOAL := info
+.DEFAULT_GOAL := $(DEFAULT_GOAL)
 
-.PHONY: info help encrypt decrypt install-ssh install-git install-helix clean
+.PHONY: info help encrypt decrypt install-ssh install-git install-helix \
+        install-packages install-rust install-zellij clean
 
 info: ## Show current config and targets
 	@echo "BUNDLE_PATH = $(BUNDLE_PATH)"
