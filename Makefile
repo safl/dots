@@ -56,6 +56,9 @@ decrypt: ## Decrypt bundle and clone repo
 	rm -f "$(BUNDLE_PATH)"
 	cd "$(REPO_PATH)" && git fsck --no-progress
 
+install-packages: ## Install system packages
+	. /etc/os-release && echo "Running ./scripts/$${ID}.sh" && exec sudo ./scripts/$${ID}.sh
+
 install-ssh: ## Install SSH keys and config from repo
 	@mkdir -p "$(SSH_DIR)"
 	@if [ ! -d "$(REPO_PATH)/ssh" ]; then \
@@ -87,6 +90,12 @@ install-helix: ## Install or update Helix config from ./helix
 		echo "Installing new Helix config..."; \
 		cp -r helix "$(HOME)/.config/helix"; \
 	fi
+
+install-rust: ## Install rust via rustup
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+install-zellij: ## Install zellij via cargo
+	OPENSSL_NO_VENDOR=1 cargo install zellij
 
 clean: ## Remove local (decrypted) bundle if present
 	@rm -f "$(BUNDLE_PATH)"
