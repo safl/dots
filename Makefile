@@ -1,80 +1,92 @@
 BUNDLE_PATH := $(HOME)/secrets.bundle
-AGE_PATH := $(BUNDLE_PATH).age
-REPO_PATH := $(HOME)/git/secrets
+AGE_PATH    := $(BUNDLE_PATH).age
+REPO_PATH   := $(HOME)/git/secrets
+SSH_DIR     := $(HOME)/.ssh
 
-.PHONY: encrypt decrypt install-ssh default info
+.DEFAULT_GOAL := info
 
-default: info
-	@echo ""
-	@echo "Usage:"
-	@echo "  make encrypt     # Create an encrypted git-bundle from secrets-repo"
-	@echo "  make decrypt     # Restore secrets-repo from encrypted git-bundle"
-	@echo "  make install-ssh # Install SSH keys and config from secrets-repo"
-	@echo "  make install-git # Configures git"
+.PHONY: info help encrypt decrypt install-ssh install-git install-helix clean
 
-info:
+info: ## Show current config and targets
 	@echo "BUNDLE_PATH = $(BUNDLE_PATH)"
 	@echo "AGE_PATH    = $(AGE_PATH)"
 	@echo "REPO_PATH   = $(REPO_PATH)"
+	@echo "SSH_DIR     = $(SSH_DIR)"
+	@echo
+	@$(MAKE) --no-print-directory help
 
-encrypt:
-	@if [ -e "$(AGE_PATH)" ]; then \
-		echo "Error: Encrypted bundle '$(AGE_PATH)' already exists. Remove it before running encrypt."; \
-		exit 1; \
-	fi
-	@if [ ! -d "$(REPO_PATH)" ]; then \
-		echo "Error: Repository('$(REPO_PATH)') does not exist; nothing to encrypt."; \
-		exit 1; \
-	fi
-	cd "$(REPO_PATH)" && \
-		git bundle create "$(BUNDLE_PATH)" --all
-	cd "$(HOME)" && \
-		age -e -p -o "$(AGE_PATH)" "$(BUNDLE_PATH)" && \
-		rm "$(BUNDLE_PATH)"
-
-decrypt:
-	@if [ ! -e "$(AGE_PATH)" ]; then \
-		echo "Error: Encrypted bundle '$(AGE_PATH)' does not exist. Nohting to decrypt."; \
-		exit 1; \
-	fi	
-	@if [ -e "$(REPO_PATH)" ]; then \
-		echo "Error: Repository '$(REPO_PATH)' already exists. Remove it before running decrypt."; \
-		exit 1; \
-	fi
-	@echo "Decrypting $(AGE_PATH) to $(BUNDLE_PATH)..."
-	age -d -o "$(BUNDLE_PATH)" "$(AGE_PATH)" || { echo "Error: Decryption failed."; exit 1; }
-	@echo "Cloning the bundle into $(REPO_PATH)..."
-	git clone "$(BUNDLE_PATH)" "$(REPO_PATH)" || { echo "Error: Git clone failed."; exit 1; }
-	rm "$(BUNDLE_PATH)"
-
-install-ssh:
-	@mkdir -p "$(HOME)/.ssh"
-	@if [ -d "$(REPO_PATH)/ssh" ]; then \
-		cp -r "$(REPO_PATH)/ssh/." "$(HOME)/.ssh/"; \
-	else \
-		echo "Error: SSH directory not found in $(REPO_PATH)/ssh."; \
-		exit 1; \
-	fi
-	@chmod 700 "$(HOME)/.ssh"
-	@find "$(HOME)/.ssh" -type f -name "id_*" -exec chmod 600 {} \;
-	@chmod 644 "$(HOME)/.ssh/config"
-	@chown -R $$(id -u):$$(id -g) "$(HOME)/.ssh"
-
-install-git:
-	git config --global user.email "os@safl.dk"
-	git config --global user.name "Simon A. F. Lund"
-
-install-helix:
-	@mkdir -p "$(HOME)/.config"
-	@if [ -d "helix" ]; then \
-		if [ -d "$(HOME)/.config/helix" ]; then \
-			echo "Updating existing Helix config..."; \
-			cp -r helix/* "$(HOME)/.config/helix/"; \
+help: ## List available targets
+	@echo "Available targets:"
+	@grep -E '^[a-zA-Z0-9_.-]+:.*?##' $(lastword $(MAKEFILE_LIST)) \
+	| sed -E 's/^([^:]+):.*?## (.*)/\1##\2/' \
+	| while IFS="##" read -r target desc; do \
+		if [ "$$target" = "$(DEFAULT_GOAL)" ]; then \
+			printf "  * make %-15s %s\n" "$$target" "$$desc"; \
 		else \
-			echo "Installing new Helix config..."; \
-			cp -r helix "$(HOME)/.config/helix"; \
+			printf "    make %-15s %s\n" "$$target" "$$desc"; \
 		fi; \
-	else \
+	done
+
+encrypt: ## Bundle repo and encrypt with age (passphrase)
+	@if [ ! -d "$(REPO_PATH)" ]; then \
+		echo "Error: Repo '$(REPO_PATH)' does not exist; nothing to encrypt."; \
+		exit 1; \
+	fi
+	@if [ -e "$(AGE_PATH)" ]; then \
+		echo "Error: Encrypted bundle '$(AGE_PATH)' already exists. Remove it first."; \
+		exit 1; \
+	fi
+	cd "$(REPO_PATH)" && git bundle create "$(BUNDLE_PATH)" --all
+	cd "$(HOME)" && age -e -p -o "$(AGE_PATH)" "$(BUNDLE_PATH)"
+	rm -f "$(BUNDLE_PATH)"
+
+decrypt: ## Decrypt bundle and clone repo
+	@if [ ! -e "$(AGE_PATH)" ]; then \
+		echo "Error: Encrypted bundle '$(AGE_PATH)' does not exist. Nothing to decrypt."; \
+		exit 1; \
+	fi
+	@if [ -e "$(REPO_PATH)" ]; then \
+		echo "Error: Repo '$(REPO_PATH)' already exists. Remove it first."; \
+		exit 1; \
+	fi
+	@echo "Decrypting $(AGE_PATH) -> $(BUNDLE_PATH)..."
+	age -d -o "$(BUNDLE_PATH)" "$(AGE_PATH)"
+	@echo "Cloning bundle into $(REPO_PATH)..."
+	git clone "$(BUNDLE_PATH)" "$(REPO_PATH)"
+	rm -f "$(BUNDLE_PATH)"
+	cd "$(REPO_PATH)" && git fsck --no-progress
+
+install-ssh: ## Install SSH keys and config from repo
+	@mkdir -p "$(SSH_DIR)"
+	@if [ ! -d "$(REPO_PATH)/ssh" ]; then \
+		echo "Error: '$(REPO_PATH)/ssh' not found."; \
+		exit 1; \
+	fi
+	cp -r "$(REPO_PATH)/ssh/." "$(SSH_DIR)/"
+	chmod 700 "$(SSH_DIR)"
+	find "$(SSH_DIR)" -type f -name "id_*" ! -name "*.pub" -exec chmod 600 {} \;
+	find "$(SSH_DIR)" -type f -name "id_*.pub" -exec chmod 644 {} \; || true
+	@if [ -f "$(SSH_DIR)/config" ]; then \
+		chmod 644 "$(SSH_DIR)/config"; \
+	fi
+
+install-git: ## Configure global git identity
+	git config --global user.email "os@safl.dk"
+	git config --global user.name  "Simon A. F. Lund"
+
+install-helix: ## Install or update Helix config from ./helix
+	@mkdir -p "$(HOME)/.config"
+	@if [ ! -d "helix" ]; then \
 		echo "Error: 'helix' directory not found in current path."; \
 		exit 1; \
 	fi
+	@if [ -d "$(HOME)/.config/helix" ]; then \
+		echo "Updating existing Helix config..."; \
+		cp -r helix/* "$(HOME)/.config/helix/"; \
+	else \
+		echo "Installing new Helix config..."; \
+		cp -r helix "$(HOME)/.config/helix"; \
+	fi
+
+clean: ## Remove local (decrypted) bundle if present
+	@rm -f "$(BUNDLE_PATH)"
