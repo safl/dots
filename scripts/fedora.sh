@@ -3,13 +3,16 @@ set -euo pipefail
 
 sudo dnf -y upgrade --refresh
 sudo dnf -y install \
+  age \
+  btop \
+  gcc \
   git \
   htop \
-  btop \
+  make \
+  meld \
   meson \
   openssl-devel \
-  pkgconf-pkg-config \
-  gcc \
-  make
+  pipx \
+  pkgconf-pkg-config
 
 # openssl-devel is needed to build zellij from source
