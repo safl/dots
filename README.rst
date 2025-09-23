@@ -21,10 +21,13 @@ The common use-case is to recover dotfiles from the ``dots`` repository and
 restore secrets from an ``age``-encrypted Git bundle::
 
     cd dots
+    make install-packages
+    make install-git
+    make install-rust
+    make install-helix
     make decrypt
     make install-ssh
-    make install-git
-    make install-helix
+
 
 To create a new encrypted bundle::
 
