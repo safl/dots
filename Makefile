@@ -1,8 +1,8 @@
-BUNDLE_PATH := $(HOME)/secrets.bundle
+REPO_PATH   := $(HOME)/secrets
+BUNDLE_PATH := $(REPO_PATH).bundle
 AGE_PATH    := $(BUNDLE_PATH).age
-REPO_PATH   := $(HOME)/git/secrets
 
-.PHONY: info help clean decrypt encrypt setup
+.PHONY: info help clean restore backup setup
 
 define help-help
 # Print the description of every target in the Makefile
@@ -12,30 +12,30 @@ help:
 	@./scripts/usage.py --repos . --colorize
 
 info: ## Show current config
-	@echo "BUNDLE_PATH = $(BUNDLE_PATH)"
-	@echo "AGE_PATH    = $(AGE_PATH)"
 	@echo "REPO_PATH   = $(REPO_PATH)"
+	@echo "AGE_PATH    = $(AGE_PATH)"
+	@echo "BUNDLE_PATH = $(BUNDLE_PATH)"
 
 define clean-help
-# Remove local (decrypted) bundle if present
+# Remove local (restoreed) bundle if present
 endef
-clean: ## 
+clean:
 	@rm -f "$(BUNDLE_PATH)"
 
-define decrypt-help
-# Decrypt the git-bundle, using age, and place the repos in $HOME/secrets
+define restore-help
+# Decrypts the git-bundle, using age, and places it in $HOME/secrets
 endef
-decrypt:
+restore: info
 	./scripts/decrypt.sh $(AGE_PATH) $(BUNDLE_PATH) $(REPO_PATH)
 
-define encrypt-help
+define backup-help
 # Create an encrypted git-bundle, using age, of the repos in $HOME/secrets
 endef
-encrypt:
+backup: info
 	./scripts/encrypt.sh $(AGE_PATH) $(BUNDLE_PATH) $(REPO_PATH)
 
 define setup-help
-# Cleans, decrypts and runs all tasks in tasks/
+# Cleans, restores and runs all tasks in tasks/
 endef
-setup: clean decrypt
+setup: info clean restore
 	./setup.sh
