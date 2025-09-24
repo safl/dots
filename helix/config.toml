@@ -1,2 +1,5 @@
 [keys.select]
 "R" = ":reflow"
+
+[editor]
+bufferline = "always"
