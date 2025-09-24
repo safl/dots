@@ -2,7 +2,7 @@
 # Install or update Helix config from ./helix.
 set -euo pipefail
 
-HELIX_SRC="${HELIX_SRC:-"$(pwd)/../home/helix"}"
+HELIX_SRC="${HELIX_SRC:-"$(pwd)/home/helix"}"
 CONFIG_DIR="${HOME}/.config"
 TARGET_DIR="${CONFIG_DIR}/helix"
 

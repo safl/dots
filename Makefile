@@ -23,39 +23,16 @@ clean: ##
 	@rm -f "$(BUNDLE_PATH)"
 
 define decrypt-help
-# Decrypt bundle and clone repo
+# Decrypt the git-bundle, using age, and place the repos in $HOME/secrets
 endef
 decrypt:
-	@if [ ! -e "$(AGE_PATH)" ]; then \
-		echo "Error: Encrypted bundle '$(AGE_PATH)' does not exist. Nothing to decrypt."; \
-		exit 1; \
-	fi
-	@if [ -e "$(REPO_PATH)" ]; then \
-		echo "Error: Repo '$(REPO_PATH)' already exists. Remove it first."; \
-		exit 1; \
-	fi
-	@echo "Decrypting $(AGE_PATH) -> $(BUNDLE_PATH)..."
-	age -d -o "$(BUNDLE_PATH)" "$(AGE_PATH)"
-	@echo "Cloning bundle into $(REPO_PATH)..."
-	git clone "$(BUNDLE_PATH)" "$(REPO_PATH)"
-	rm -f "$(BUNDLE_PATH)"
-	cd "$(REPO_PATH)" && git fsck --no-progress
+	./scripts/decrypt.sh $(AGE_PATH) $(BUNDLE_PATH) $(REPO_PATH)
 
 define encrypt-help
-# Bundle repo and encrypt with age (passphrase)
+# Create an encrypted git-bundle, using age, of the repos in $HOME/secrets
 endef
 encrypt:
-	@if [ ! -d "$(REPO_PATH)" ]; then \
-		echo "Error: Repo '$(REPO_PATH)' does not exist; nothing to encrypt."; \
-		exit 1; \
-	fi
-	@if [ -e "$(AGE_PATH)" ]; then \
-		echo "Error: Encrypted bundle '$(AGE_PATH)' already exists. Remove it first."; \
-		exit 1; \
-	fi
-	cd "$(REPO_PATH)" && git bundle create "$(BUNDLE_PATH)" --all
-	cd "$(HOME)" && age -e -p -o "$(AGE_PATH)" "$(BUNDLE_PATH)"
-	rm -f "$(BUNDLE_PATH)"
+	./scripts/encrypt.sh $(AGE_PATH) $(BUNDLE_PATH) $(REPO_PATH)
 
 define setup-help
 # Cleans, decrypts and runs all tasks in tasks/

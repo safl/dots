@@ -15,9 +15,9 @@ for script in $(ls "$taskdir"/*.sh | sort); do
 
   if [[ "$name" == *sudo* ]]; then
     echo "    (running with sudo)"
-    sudo bash "$script"
+    sudo bash -l "$script"
   else
-    bash "$script"
+    bash -l "$script"
   fi
 
   echo "    ✅ Done: $name"

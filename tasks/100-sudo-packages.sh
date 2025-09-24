@@ -12,7 +12,7 @@ fi
 . /etc/os-release
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-repo_root="$(cd "${script_dir}" && pwd)"
+repo_root="$(cd "${script_dir}/.." && pwd)"
 target="${repo_root}/scripts/${ID}.sh"
 
 if [[ ! -x "${target}" ]]; then
