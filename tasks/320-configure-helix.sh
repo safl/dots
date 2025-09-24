@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
 # Install or update Helix config from ./helix.
-# Usage: ./install-helix.sh
-# Customize source via HELIX_SRC=/path/to/helix (defaults to $PWD/helix)
+set -euo pipefail
 
 HELIX_SRC="${HELIX_SRC:-"$(pwd)/../home/helix"}"
 CONFIG_DIR="${HOME}/.config"

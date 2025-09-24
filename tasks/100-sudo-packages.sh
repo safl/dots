@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-# Runs the OS-specific script in ./scripts/${ID}.sh using /etc/os-release
-# Usage: ./install-packages.sh
+# Runs the Distro-specific script in ./scripts/${ID}.sh using /etc/os-release
 # Expects: ./scripts/<ID>.sh to exist (e.g., debian.sh, fedora.sh, arch.sh)
+set -euo pipefail
 
 if [[ ! -r /etc/os-release ]]; then
   echo "Error: /etc/os-release not found or unreadable." >&2
@@ -28,4 +26,4 @@ if [[ ! -x "${target}" ]]; then
 fi
 
 echo "Running ${target} with sudo..."
-exec sudo "${target}"
+exec "${target}"
