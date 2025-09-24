@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo dnf -y upgrade --refresh
-sudo dnf -y install \
+dnf -y upgrade --refresh
+dnf -y install \
   age \
   btop \
   gcc \
@@ -11,8 +11,9 @@ sudo dnf -y install \
   make \
   meld \
   meson \
-  openssl-devel \
   pipx \
-  pkgconf-pkg-config
+  pkgconf-pkg-config \
+  screen
 
 # openssl-devel is needed to build zellij from source
+dnf -y install openssl-devel
