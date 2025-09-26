@@ -1,4 +1,4 @@
-REPO_PATH   := $(HOME)/secrets
+REPO_PATH   := $(PWD)/../../secrets
 BUNDLE_PATH := $(REPO_PATH).bundle
 AGE_PATH    := $(BUNDLE_PATH).age
 

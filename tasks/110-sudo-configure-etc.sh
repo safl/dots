@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-src_dir="../secrets/etc"
+src_dir="../../secrets/etc"
 dst_dir="/etc"
 
 begin="# BEGIN: Customization"
