@@ -7,7 +7,6 @@ dnf -y install \
   btop \
   gcc \
   git \
-  helix \
   htop \
   make \
   meld \
