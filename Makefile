@@ -2,7 +2,7 @@ REPO_PATH   := $(PWD)/../../secrets
 BUNDLE_PATH := $(REPO_PATH).bundle
 AGE_PATH    := $(BUNDLE_PATH).age
 
-.PHONY: info help clean restore backup setup
+.PHONY: info help clean restore backup setup setup-all
 
 define help-help
 # Print the description of every target in the Makefile
@@ -35,7 +35,13 @@ backup: info
 	./scripts/encrypt.sh $(AGE_PATH) $(BUNDLE_PATH) $(REPO_PATH)
 
 define setup-help
-# Cleans, restores and runs all tasks in tasks/
+# Install tools and configure dotfiles (no secrets)
 endef
-setup: info clean restore
+setup: info
+	./setup.sh --no-secrets
+
+define setup-all-help
+# Cleans, restores secrets and runs all tasks in tasks/
+endef
+setup-all: info clean restore
 	./setup.sh
